@@ -1,0 +1,80 @@
+<!--
+초기 화면 표시.
+엔티티 통해서 전체 데이터를 SELECT 해서 리스트화 한 후 화면 표시 기능
+-->
+
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MS Catalog</title>
+    <link rel="stylesheet" href="/style.css">
+    <script>
+        function moveRegister() {
+            //  라디오 버튼 선택 후 submit 클릭 시 선택된 ms의 형식번호를 파라미터로 해서 Controller에 전송
+            const selectedRadio  = document.querySelector('input[name="selectedMsId"]:checked');
+            let url = "/mobileSuit/register"
+
+            if (selectedRadio ) {
+                //url += "?selectedMsId=" + selectedRadio.value;
+                url += "?selectedMsId=" + selectedRadio.value;
+            }
+
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+<h1>Mobile Suit Catalog</h1>
+
+<form action="/mobileSuit/search" method="get">
+    <label for="filterType">필터 조건:</label>
+    <select id="filterType" name="filterType">
+        <option value="type">타입</option>
+        <option value="status">상태</option>
+        <option value="faction">소속 세력</option>
+        <option value="company">제조사</option>
+    </select>
+
+    <label for="filterValue">필터 값:</label>
+    <input type="text" id="filterValue" name="filterValue">
+
+    <button type="submit">검색</button>
+</form>
+
+<p th:if="${message}" th:text="${message}"></p>
+
+<table>
+    <thead>
+    <tr>
+        <th>선택</th>
+        <th>No</th>
+        <th>형식번호</th>
+        <th>명칭</th>
+        <th>제조사</th>
+        <th>소속 세력</th>
+        <th>타입</th>
+        <th>상태</th>
+        <th>코스트 (원)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ms, iterStat : ${msList}">
+        <td>
+            <input type="radio" name="selectedMsId" th:value="${ms.msId}">
+        </td>
+        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${ms.msId}"></td>
+        <td th:text="${ms.msName}"></td>
+        <td th:text="${ms.company.companyName}"></td>
+        <td th:text="${ms.faction.factionName}"></td>
+        <td th:text="${ms.msType}"></td>
+        <td th:text="${ms.msStatus}"></td>
+        <td th:text="${ms.msCost} + ' 원'"></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<input type="button" onclick="moveRegister()" value="등록 / 수정">  <!-- 등록페이지 이동 버튼 -->
+</body>
+</html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm" version="2.2">
+    <named-query name="MobileSuit.findAllOrderByStatus">
+        <query>
+            <!-- 현재 MS의 운용상태 > 세력 > 제조비용 별로 order by  -->
+            SELECT m FROM MobileSuit m ORDER BY
+            CASE m.msStatus
+            WHEN '운용중' THEN 1
+            WHEN '수주(개발완료)' THEN 2
+            WHEN '수주(개발전)' THEN 3
+            WHEN '재생산' THEN 4
+            ELSE 5
+            END,
+            m.faction asc,
+            m.msCost desc
+        </query>
+    </named-query>
+</entity-mappings>

@@ -1,0 +1,102 @@
+<!--
+등록 화면 표시.
+list.html에서 선택한 radio 박스의 msId 값이 있으면 update form을, 없는 경우 insert form을 표시
+
+이후 update 및 insert 작업 후 db 갱신
+-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catalog Registration</title>
+    <link rel="stylesheet" href="/style.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const isEditMode = /*[[${ms != null}]]*/ false; // Thymeleaf 조건
+            if (isEditMode) {
+                document.getElementById("commonFilter").style.display = "none";
+            }
+        });
+
+        // 등록 범주 (ms냐, 새 회사 코드냐, 새로운 세력이냐 등) 필터 선택 라벨 설정
+        function showForm() {
+            document.getElementById("mobileSuitFormRegistration").style.display = none;
+            document.getElementById("orderCompanyForm").style.display = none;
+            document.getElementById("factionForm").style.display = none;
+
+            const target = document.getElementById("targetType").value;
+
+            if(target === "mobileSuit") {
+                document.getElementById("mobileSuitFormRegistration").style.display="block";
+            } else if (target === "orderCompany") {
+                document.getElementById("orderCompanyForm").style.display = "block";
+            } else if (target === "faction") {
+                document.getElementById("factionForm").style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+<div th:if="${ms == null}" th:insert="fragments/commonFilter :: commonFilter"></div>
+<!-- 수정 폼 -->
+<form id="mobileSuitFormUpdate" th:if="${ms != null}" method="post" th:action="@{/mobileSuit/updateMobileSuit}">
+    <label>형식번호: <input type="text" name="msId" th:value="${ms.msId}" readonly></label><br>
+    <label>상태:
+        <select name="msStatus">
+            <option value="운용중" th:selected="${ms?.msStatus == '운용중'}">운용중</option>
+            <option value="수주(개발완료)" th:selected="${ms?.msStatus == '수주(개발완료'}">수주(개발완료)</option>
+            <option value="수주(개발전)" th:selected="${ms?.msStatus == '수주(개발전'}">수주(개발전)</option>
+            <option value="재생산" th:selected="${ms?.msStatus == '재생산'}">재생산</option>
+            <option value="단종" th:selected="${ms?.msStatus == '단종'}">단종</option>
+        </select>
+    </label><br>
+    <button type="submit">업데이트</button>
+</form>
+
+
+<form th:object="${registrationForm}" th:action="@{/mobileSuit/registerMobileSuit}" method="post">
+    <label>형식번호: <input type="text" th:field="*{msId}"></label>
+    <p th:if="${#fields.hasErrors('msId')}" th:errors="*{msId}"></p>
+    <br>
+
+    <label>명칭: <input type="text" th:field="*{msName}"></label>
+    <p th:if="${#fields.hasErrors('msName')}" th:errors="*{msName}"></p>
+    <br>
+
+    <label>타입: <input type="text" th:field="*{msType}"></label>
+    <p th:if="${#fields.hasErrors('msType')}" th:errors="*{msType}"></p>
+    <br>
+
+    <label>상태: <input type="text" th:field="*{msStatus}"></label>
+    <p th:if="${#fields.hasErrors('msStatus')}" th:errors="*{msStatus}"></p>
+    <br>
+
+    <label>생산 단가: <input type="number" th:field="*{msCost}"></label>
+    <p th:if="${#fields.hasErrors('msCost')}" th:errors="*{msCost}"></p>
+    <br>
+
+    <label>제조사 이름: <input type="text" th:field="*{companyName}"></label>
+    <p th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></p>
+    <br>
+
+    <label>세력 이름: <input type="text" th:field="*{factionName}"></label>
+    <p th:if="${#fields.hasErrors('factionName')}" th:errors="*{factionName}"></p>
+    <br>
+
+    <button type="submit">등록</button>
+</form>
+
+<!-- Order Company Form -->
+<form id="orderCompanyForm" action="/company/register" method="post" style="display:none;">
+    <label>회사명: <input type="text" name="companyName"></label><br>
+    <button type="submit">등록</button>
+</form>
+
+<!-- Faction Form -->
+<form id="factionForm" action="/faction/register" method="post" style="display:none;">
+    <label>세력명: <input type="text" name="factionName"></label><br>
+    <button type="submit">등록</button>
+</form>
+</body>
+</html>
