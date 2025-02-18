@@ -1,6 +1,6 @@
 package com.nrkimprogect.thegym
 
-import com.nrkimprogect.thegym.controller.WiseSayingController
+import com.nrkimprogect.thegym.domain.controller.WiseSayingController
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

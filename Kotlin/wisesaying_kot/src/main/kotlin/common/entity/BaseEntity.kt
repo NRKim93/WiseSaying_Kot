@@ -1,15 +1,14 @@
-package com.nrkimprogect.thegym.entity
+package com.nrkimprogect.thegym.common.entity
 
-import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.MappedSuperclass
 
-@Entity
-data class WiseSaying(
+@MappedSuperclass
+abstract class BaseEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val author: String,
-    val wiseSaying: String
+
+    open var id: Long? = null
 )

@@ -1,7 +1,7 @@
-package com.nrkimprogect.thegym.repository
+package com.nrkimprogect.thegym.domain.repository
 
-import com.nrkimprogect.thegym.dto.WiseSayingDto
-import com.nrkimprogect.thegym.entity.WiseSaying
+import com.nrkimprogect.thegym.domain.dto.WiseSayingDto
+import com.nrkimprogect.thegym.domain.entity.WiseSaying
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

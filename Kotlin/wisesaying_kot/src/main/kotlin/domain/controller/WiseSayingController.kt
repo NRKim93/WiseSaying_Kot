@@ -1,12 +1,13 @@
-package com.nrkimprogect.thegym.controller
+package com.nrkimprogect.thegym.domain.controller
 
-import com.nrkimprogect.thegym.dto.WiseSayingDto
-import com.nrkimprogect.thegym.service.WiseSayingService
+import com.nrkimprogect.thegym.common.exception.InvalidWiseSayingInputException
+import com.nrkimprogect.thegym.domain.dto.WiseSayingDto
+import com.nrkimprogect.thegym.domain.service.WiseSayingService
 import org.springframework.stereotype.Controller
 
 
 @Controller
-class WiseSayingController ( private val service: WiseSayingService ) {
+class WiseSayingController ( private val service: WiseSayingService) {
     
     fun addWiseSaying() {
         print(" 명언 : ")
@@ -16,15 +17,15 @@ class WiseSayingController ( private val service: WiseSayingService ) {
 
         when {
             wiseSaying.isBlank() && author.isNotBlank() -> {
-                println("명언을 입력해 주세요.")
+                throw InvalidWiseSayingInputException("명언을 입력해 주세요.")
             }
 
             wiseSaying.isNotBlank() && author.isBlank() -> {
-                println("작가를 입력해 주세요.")
+                throw InvalidWiseSayingInputException("작가를 입력해 주세요.")
             }
 
             wiseSaying.isBlank() && author.isBlank() -> {
-                println("명언과 작가를 둘 다 입력해 주세요.")
+                throw InvalidWiseSayingInputException("명언과 작가를 둘 다 입력해 주세요.")
             }
 
             else -> {
@@ -43,31 +44,17 @@ class WiseSayingController ( private val service: WiseSayingService ) {
         val rs = service.showWiseSayingList()
 
         rs.forEach() {aa ->
-            println("${aa.id} / ${aa.author} / ${aa.wiseSaying} ")
+            println("${aa.id} / ${aa.author} / ${aa.content} ")
         }
     }
 
     fun deleteWiseSaying() {
         print("? id = ")
         var id = readLine()?.toLongOrNull() ?: 0L
-        var selRs = service.showWiseSaying(id)
+        val rs = service.deleteById(id)
 
-        when(selRs) {
-            "404" -> {
-                println("${id}번 명언이 존재하지 않습니다. ")
-            }
-        }
-
-        var delRs = service.deleteById(id)
-
-        when (delRs) {
-            "200" -> {
-                println("${id}번 명언이 삭제되었습니다. ")
-            }
-            
-            "500" -> {
-                println("삭제중 에러 발생")
-            }
+        if (rs == "200") {
+            println( "${id}번 명언이 삭제 되었습니다. ")
         }
     }
 
@@ -79,7 +66,7 @@ class WiseSayingController ( private val service: WiseSayingService ) {
 
         when(selRs) {
             "200" -> {
-                print(" 명언 (기존) :  ${selContent?.wiseSaying}")
+                print(" 명언 (기존) :  ${selContent?.content}")
                 print(" 명언 : ")
                 var wiseSaying = readLine()?.trim() ?: ""
 
@@ -92,13 +79,6 @@ class WiseSayingController ( private val service: WiseSayingService ) {
 
                 println("${id}번 명언의 내용이 편집 되었습니다.")
             }
-
-            "404" -> {
-                println("${id}번 명언이 존재하지 않습니다. ")
-            }
         }
-
-
-
     }
 }
